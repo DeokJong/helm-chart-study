@@ -1,15 +1,28 @@
+{{- /*
+templates/workload/service.yaml
+- workloads.deployments의 각 항목을 순회
+- deployment와 service 둘 다 enabled일 때만 생성
+*/ -}}
+{{- $root := . -}}
+{{- range $name, $w := $root.Values.workloads.deployments }}
+{{- if and $w.enabled $w.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "app.fullname" . }}
+  name: {{ include "app.fullname" $root }}-{{ $name }}
   labels:
-    {{- include "app.labels" . | nindent 4 }}
+    {{- include "app.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: service
+    app.kubernetes.io/part-of: {{ include "app.name" $root }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ default "ClusterIP" $w.service.type }}
   selector:
-    {{- include "app.selectorLabels" . | nindent 4 }}
+    {{- include "app.selectorLabels" (dict "root" $root "name" $name) | nindent 4 }}
   ports:
     - name: http
-      port: {{ .Values.service.port }}
-      targetPort: http
+      port: {{ default (default 80 $w.containerPort) $w.service.port }}
+      targetPort: {{ default "http" $w.service.targetPort }}
       protocol: TCP
+---
+{{- end }}
+{{- end }}

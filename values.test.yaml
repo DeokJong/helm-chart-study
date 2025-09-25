@@ -1,1 +1,7 @@
+# values.test.yaml
 fullnameOverride: newtopia-test
+
+workloads:
+  deployments:
+    frontend:
+      enabled: true
