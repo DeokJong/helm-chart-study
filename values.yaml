@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: dudgh614/gameserver-app   # 본인 이미지 리포
+  tag: "latest"                         # dev/prod에서 오버라이드 권장
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+containerPort: 8080                     # 컨테이너 실제 포트
+envFrom: []                             # 예: [{ secretRef: { name: "gameserver-secret" } }]
+
+resources: {}                           # 나중에 requests/limits 설정
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podAnnotations: {}
+podLabels: {}
+
+serviceAccount:
+  create: true
+  name: ""                              # 비우면 fullname 사용
+
+tests:
+  enabled: false                        # 필요 시 test Pod 추가 예정
