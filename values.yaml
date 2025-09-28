@@ -33,3 +33,14 @@ workloads:
         type: ClusterIP
         port: 80
         targetPort: 80
+  
+  statefulset:
+    postgres:
+      enabled: false
+      replicas: 1
+      image:
+        repository: postgres
+        tag: "latest"
+        pullPolicy: IfNotPresent
+      containerPort: 5432
+      
